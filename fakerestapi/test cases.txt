@@ -1,0 +1,69 @@
+API: GET /api/v1/Authors
+Test Case: response should be 200 OK
+Expected Result: 200 OK
+Actual Result: 200 OK
+Status: Pass
+
+API: GET /api/v1/Authors
+Test Case: Objects inside response contain, id, idBook, firstName, lastName.
+Expected Result: response body contains keys names "id", "idBook", "firstName", "lastName"
+Actual Result: response body contains keys names "id", "idBook", "firstName", "lastName"
+Status: Pass
+
+API: GET /api​/v1​/Authors
+Test Case: The response has the same number of authors across multiple requests.
+Expected Result: Same number of authors on each request. 
+Actual Result: Different number of authors on each request.
+Status: Fail
+
+------
+
+API: POST /api​/v1​/Authors
+Test Case: Register a new valid Author successfully and response code "201 Created".
+Expected Result: 201 Created code
+Actual Result: 200 OK code
+Status: Fail
+
+API: POST /api​/v1​/Authors
+Test Case:  firstname & lastname should be mandatory
+Expected Result:The request should fail and the response code should be 400 if firstname is missed in the request body (same for lastname).
+Actual Result: The request returns 201
+Status: Fail
+
+------
+
+API: GET /api​/v1​/Authors​/authors​/books​/{idBook}
+Test Case: Searching with valid idBook should return relative data in response body.
+Expected Result: List of authors with same idBook in response body
+Actual Result:  List of authors with same idBook in response body
+Status: Pass
+
+API: GET /api​/v1​/Authors​/authors​/books​/{idBook}
+Test Case: Requesting an id that doesn't exist like ( idBook = 50000 ) returns 404 error code
+Expected Result: 404 not found error code.
+Actual Result: 200 OK code.
+Status: Fail
+
+------
+
+API: PUT ​/api​/v1​/Authors​/{id}
+Test Case: Author's data with (id = 1 ) is updated successfully with the following author data (id = 1, idBook = 1, firstname = "Ahmed", lastName="Hosny")
+Expected Result: Response body has the author with (id = 1, idBook = 1, firstname = "Ahmed", lastName="Hosny")
+Actual Result:  Response body has the author with (id = 1, idBook = 1, firstname = "Ahmed", lastName="Hosny")
+Status: Pass
+
+------
+
+API: GET ​/api​/v1​/Authors​/{id}
+Test Case: The author's data is changed in GET request.
+Expected Result: Author with updated data (id = 1, idBook = 1, firstname = "Ahmed", lastName = "Hosny") in response body
+Actual Result: Author with old data (id = 1, idBook = 1, firstname = "First Name 1", lastName = "Last Name 1") in response body
+Status: Fail
+
+------
+
+API: DELETE ​/api​/v1​/Authors​/{id}
+Test Case: Deleting an existing author (id = 2) is sucessful.
+Expected Result: Requesting (GET ​/api​/v1​/Authors​/{id}) with id = 2 returns error as the user is deleted.
+Actual Result:  User is returned from (GET ​/api​/v1​/Authors​/{id}) with id = 2
+Status: Fail

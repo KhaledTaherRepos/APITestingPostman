@@ -1,0 +1,580 @@
+{
+	"info": {
+		"_postman_id": "f47b12bc-4aae-42c7-a6aa-c466958be807",
+		"name": "Authors",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19207569"
+	},
+	"item": [
+		{
+			"name": "get all authors",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*\r",
+							"Test Case 1: \r",
+							"Make sure the response is \"200 OK\r",
+							"*/\r",
+							"\r",
+							"pm.test(\"Make sure the response is 200 OK\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(200);\r",
+							"});\r",
+							"\r",
+							"/*\r",
+							"Test Case 2: \r",
+							"Objects inside response contain, id, idBook, firstName, lastName.\r",
+							"*/\r",
+							"let responseData=pm.response.json();\r",
+							"\r",
+							"pm.test(\"Objects inside response contain, id, idBook, firstName, lastName.\", () => {\r",
+							"    pm.expect(responseData[0]).to.have.property(\"id\") ;\r",
+							"    pm.expect(responseData[0]).to.have.property(\"idBook\") ;\r",
+							"    pm.expect(responseData[0]).to.have.property(\"firstName\") ;\r",
+							"    pm.expect(responseData[0]).to.have.property(\"lastName\") ;\r",
+							"            \r",
+							"});\r",
+							"\r",
+							"/*\r",
+							"Test Case 3: \r",
+							"verify the api returns all authors by making multiple requests and expecting the same number of authors every time.\r",
+							"*/\r",
+							"\r",
+							"//record the size of the main response\r",
+							"let orignalResponseSize = Object. keys(responseData).length;\r",
+							"let requestCount = pm.collectionVariables.get(\"internalRequestsNumber\") ;\r",
+							"let allRequestsSameSize = true ;\r",
+							"\r",
+							"makeMultiRequests () ;\r",
+							"\r",
+							"//\r",
+							"//\r",
+							"//\r",
+							"\r",
+							"async function makeMultiRequests ()\r",
+							"{\r",
+							"console.log();\r",
+							"console.log(\"Making \" + requestCount + \" additional requests...\") ;\r",
+							"\r",
+							"let url = pm.collectionVariables.get(\"baseUrl\") + \"/api/v1/Authors\" ;\r",
+							"\r",
+							"for (let i = 0 ; i<requestCount ; i++)\r",
+							"{\r",
+							"   let promise = new Promise ( (resolve, reject) => {\r",
+							"       pm.sendRequest(url, (error, response) => {\r",
+							"    setTimeout(() => {}, 100); \r",
+							"    let length = Object. keys(response.json()).length ;\r",
+							"     resolve(length) ;\r",
+							"})\r",
+							"});\r",
+							"\r",
+							"let currentResponseSize = await promise ;\r",
+							"console.log(\"Response \"+ (i+1) + \": [current size]: \" + currentResponseSize +\"  [orignal response size]: \" + orignalResponseSize) ;\r",
+							"\r",
+							"if (orignalResponseSize !=currentResponseSize)  //if the current authors size is different from the original, the test should fail.\r",
+							"    allRequestsSameSize = false ;\r",
+							"}\r",
+							"\r",
+							"pm.test(\"The response has the same number of authors across multiple requests\", () => {\r",
+							"    pm.expect(allRequestsSameSize).to.eql(true);\r",
+							"});\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"internalRequestsNumber\", 5) //will make 5 requests inside current request."
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create author 1",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"id\", 1) ; \r",
+							"pm.collectionVariables.set(\"idBook\", 1) ;\r",
+							"pm.collectionVariables.set(\"firstName\",\"Khaled\") ;\r",
+							"pm.collectionVariables.set(\"lastName\", \"Taher\") ;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Register a new valid Author successfully and response code 201 Created.\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(201);   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{id}},\r\n  \"idBook\": {{idBook}},\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create author 2",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"id\", 1) ; //invalid id value\r",
+							"pm.collectionVariables.set(\"idBook\", 1) ;\r",
+							"pm.collectionVariables.set(\"firstName\",\"Khaled\") ;\r",
+							"pm.collectionVariables.set(\"lastName\", \"Taher\") ;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let id = pm.collectionVariables.get(\"id\") ;\r",
+							"\r",
+							"pm.test(\"firstname & lastname should be mandatory\", () => {\r",
+							"    pm.expect(pm.response.code).to.eql(400);   \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{id}},\r\n  \"idBook\": {{idBook}},\r\n  //\"firstName\": \"{{firstName}}\",\r\n // \"lastName\": \"{{lastName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "book authors",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let id = 1 ; \r",
+							"pm.collectionVariables.set(\"idBook\", id) ;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*\r",
+							"Test Case 1: Searching with valid idBook should return relative data in response body.\r",
+							"*/\r",
+							"\r",
+							"let response =pm.response.json() ;\r",
+							"let length = Object.keys(response).length ;\r",
+							"let idBook = pm.collectionVariables.get(\"idBook\") ;\r",
+							"let allAuthorsSameId = true ;\r",
+							"\r",
+							"\r",
+							"for (let i = 0 ; i< length; i++)\r",
+							"    {\r",
+							"        if (response[i][\"idBook\"] != idBook)\r",
+							"          allAuthorsSameId = false ;\r",
+							"          break ;\r",
+							"    }\r",
+							"\r",
+							"    pm.test(\"All authors in response have the same idBook( idBook = \" + idBook + \" )\", () => { \r",
+							"    pm.expect(allAuthorsSameId).to.eql(true);\r",
+							"  \r",
+							"});\r",
+							"\r",
+							"/*\r",
+							"Test Case 2: Requesting an id that doesn't exist returns 404 error code\r",
+							"*/\r",
+							"\r",
+							"requestNonExistentId () ;\r",
+							"\r",
+							"async function requestNonExistentId (){\r",
+							"\r",
+							"idBook = 5000 ;    //id that doesn't exit\r",
+							"let url = pm.collectionVariables.get(\"baseUrl\") + \"/api/v1/Authors/authors/books/\" + idBook ;  //request with this idBook\r",
+							"\r",
+							"let promise = new Promise ( (resolve, reject) => {\r",
+							"       pm.sendRequest(url, (error, response) => {\r",
+							"    setTimeout(() => {}, 100); \r",
+							"    let value = response.json() ;\r",
+							"     resolve(value) ;\r",
+							"})}) ;\r",
+							"\r",
+							"let response = await promise ;\r",
+							"\r",
+							"pm.test(\"Requesting an id that doesn't exist ( idBook = \" + idBook + \" ) returns 404 error code\", () => { \r",
+							"    pm.expect(pm.response.code).to.eql(404);\r",
+							"  \r",
+							"});\r",
+							"    \r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors/authors/books/:idBook",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors",
+						"authors",
+						"books",
+						":idBook"
+					],
+					"variable": [
+						{
+							"key": "idBook",
+							"value": "{{idBook}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update author",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"id\", 1) ; \r",
+							"pm.collectionVariables.set(\"idBook\", 1) ;\r",
+							"pm.collectionVariables.set(\"firstName\",\"Ahmed\") ;\r",
+							"pm.collectionVariables.set(\"lastName\", \"Hosny\") ;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"/*\r",
+							"Test Case 1:\r",
+							"Update (firstname, lastname) and confirm that Author's data in response is updated successfully.\r",
+							"*/\r",
+							"\r",
+							"let id = pm.collectionVariables.get(\"id\") ;\r",
+							"let requestAuthor = JSON.parse(pm.request.body.raw) ; \r",
+							"let responseAuthor = pm.response.json() ;\r",
+							"pm.test(\"Update (firstname = \" + requestAuthor.firstName + \", lastName = \" + requestAuthor.lastName + \") and confirm that Author's data in response is updated successfully.\", () => {\r",
+							"\r",
+							"    //check the request data against the response data\r",
+							"    \r",
+							"    console.log(requestAuthor.firstName + \" \" + responseAuthor.firstName ) ;\r",
+							"    pm.expect(requestAuthor.firstName).to.eql(responseAuthor.firstName) ;\r",
+							"    \r",
+							"    console.log(requestAuthor.lastName + \" \" + responseAuthor.lastName ) ;\r",
+							"    pm.expect(requestAuthor.lastName).to.eql(responseAuthor.lastName) ;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": {{id}},\r\n  \"idBook\": {{idBook}},\r\n  \"firstName\": \"{{firstName}}\",\r\n  \"lastName\": \"{{lastName}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get author",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let id = pm.collectionVariables.get(\"id\") ; \r",
+							"let idBook = pm.collectionVariables.get(\"idBook\") ;\r",
+							"let firstName = pm.collectionVariables.get(\"firstName\") ;\r",
+							"let lastName = pm.collectionVariables.get(\"lastName\") ;\r",
+							"\r",
+							"let response = pm.response.json() ;\r",
+							"pm.test(\"The author's data is changed in GET request.\", () => {\r",
+							"    pm.expect(response.id).to.eql(id) ;\r",
+							"    pm.expect(response.idBook).to.eql(idBook) ;\r",
+							"    pm.expect(response.firstName).to.eql(firstName) ;\r",
+							"    pm.expect(response.lastName).to.eql(lastName) ;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete author",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"let id = 2  ;  //author id to be deleted\r",
+							"pm.collectionVariables.set(\"id\", id) ;"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*\r",
+							"test case:\r",
+							"verify delete by running get request to the id of the deleted author.\r",
+							"*/\r",
+							"\r",
+							"let id = pm.collectionVariables.get(\"id\") ;\r",
+							"let url = pm.collectionVariables.get(\"baseUrl\") +\"/api/v1/Authors/\" + id ;\r",
+							"\r",
+							"\r",
+							"makeGetRequestToDeletedAuthor () ;\r",
+							"//\r",
+							"\r",
+							"\r",
+							"async function makeGetRequestToDeletedAuthor ()\r",
+							"{\r",
+							"     let promise = new Promise ( (resolve, reject) => {\r",
+							"       pm.sendRequest(url, (error, response) => {    //request the author with this id after it was deleted\r",
+							"    setTimeout(() => {}, 100); \r",
+							"     resolve(response) ;\r",
+							"})\r",
+							"});\r",
+							"\r",
+							"let response = await promise ;\r",
+							"\r",
+							"pm.test(\"Deleting an existing author (id = \" + id +\") is successful.\", () => {  //if the user was deleteed, the request should return 404 because the user no longer exists.\r",
+							"    pm.expect(response.code).to.eql(404) ;\r",
+							"});\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/api/v1/Authors/:id",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"api",
+						"v1",
+						"Authors",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{id}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://fakerestapi.azurewebsites.net",
+			"type": "string"
+		},
+		{
+			"key": "id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "idBook",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "internalRequestsNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "firstName",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lastName",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

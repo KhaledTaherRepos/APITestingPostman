@@ -1,0 +1,9 @@
+ "boards": [
+        {
+            "id": "636253b2d1dd9c00706172fa",
+            "name": "First Board Test",
+            "closed": false,
+            "idOrganization": "6362538558104a00835aaa7b",
+            "pinned": false
+        }
+    ]
